@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="OrgaSANItionModelStoreContainer" CdmEntityContainer="OrgaSANItionEntities">
+    <EntitySetMapping Name="Benutzer">
+      <EntityTypeMapping TypeName="OrgaSANItionModel.Benutzer">
+        <MappingFragment StoreEntitySet="Benutzer">
+          <ScalarProperty Name="B_ID" ColumnName="B_ID" />
+          <ScalarProperty Name="Vorname" ColumnName="Vorname" />
+          <ScalarProperty Name="Nachname" ColumnName="Nachname" />
+          <ScalarProperty Name="E_Mail" ColumnName="E_Mail" />
+          <ScalarProperty Name="Schul_ID" ColumnName="Schul_ID" />
+          <ScalarProperty Name="Benutzername" ColumnName="Benutzername" />
+          <ScalarProperty Name="Passwort" ColumnName="Passwort" />
+          <ScalarProperty Name="Sanitage_ID" ColumnName="Sanitage_ID" />
+          <ScalarProperty Name="Springertage_ID" ColumnName="Springertage_ID" />
+          <ScalarProperty Name="SaniScore" ColumnName="SaniScore" />
+          <ScalarProperty Name="SpringerScore" ColumnName="SpringerScore" />
+          <ScalarProperty Name="AnzahlDienste" ColumnName="AnzahlDienste" />
+          <ScalarProperty Name="FavPartner" ColumnName="FavPartner" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Sanitage">
+      <EntityTypeMapping TypeName="OrgaSANItionModel.Sanitage">
+        <MappingFragment StoreEntitySet="Sanitage">
+          <ScalarProperty Name="Sanitage_ID" ColumnName="Sanitage_ID" />
+          <ScalarProperty Name="Montag" ColumnName="Montag" />
+          <ScalarProperty Name="Dienstag" ColumnName="Dienstag" />
+          <ScalarProperty Name="Mittwoch" ColumnName="Mittwoch" />
+          <ScalarProperty Name="Donnerstag" ColumnName="Donnerstag" />
+          <ScalarProperty Name="Freitag" ColumnName="Freitag" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Schulen">
+      <EntityTypeMapping TypeName="OrgaSANItionModel.Schulen">
+        <MappingFragment StoreEntitySet="Schulen">
+          <ScalarProperty Name="S_ID" ColumnName="S_ID" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Springertage">
+      <EntityTypeMapping TypeName="OrgaSANItionModel.Springertage">
+        <MappingFragment StoreEntitySet="Springertage">
+          <ScalarProperty Name="Springertage_ID" ColumnName="Springertage_ID" />
+          <ScalarProperty Name="Montag" ColumnName="Montag" />
+          <ScalarProperty Name="Dienstag" ColumnName="Dienstag" />
+          <ScalarProperty Name="Mittwoch" ColumnName="Mittwoch" />
+          <ScalarProperty Name="Donnerstag" ColumnName="Donnerstag" />
+          <ScalarProperty Name="Freitag" ColumnName="Freitag" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Tage">
+      <EntityTypeMapping TypeName="OrgaSANItionModel.Tage">
+        <MappingFragment StoreEntitySet="Tage">
+          <ScalarProperty Name="Springer2" ColumnName="Springer2" />
+          <ScalarProperty Name="Springer1" ColumnName="Springer1" />
+          <ScalarProperty Name="Sani2" ColumnName="Sani2" />
+          <ScalarProperty Name="Sani1" ColumnName="Sani1" />
+          <ScalarProperty Name="Datum" ColumnName="Datum" />
+          <ScalarProperty Name="Tag_ID" ColumnName="Tag_ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

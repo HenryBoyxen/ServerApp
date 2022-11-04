@@ -1,0 +1,212 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="OrgaSANItionModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Benutzer">
+    <Key>
+      <PropertyRef Name="B_ID" />
+    </Key>
+    <Property Name="B_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Vorname" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Nachname" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="E_Mail" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Schul_ID" Type="Int32" Nullable="false" />
+    <Property Name="Benutzername" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Passwort" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Sanitage_ID" Type="Int32" />
+    <Property Name="Springertage_ID" Type="Int32" />
+    <Property Name="SaniScore" Type="Int32" />
+    <Property Name="SpringerScore" Type="Int32" />
+    <Property Name="AnzahlDienste" Type="Int32" />
+    <Property Name="FavPartner" Type="Int32" />
+    <NavigationProperty Name="Benutzer1" Relationship="Self.fk_benutzer_benutzer" FromRole="Benutzer" ToRole="Benutzer1" />
+    <NavigationProperty Name="Benutzer2" Relationship="Self.fk_benutzer_benutzer" FromRole="Benutzer1" ToRole="Benutzer" />
+    <NavigationProperty Name="Sanitage" Relationship="Self.fk_benutzer_sanitage" FromRole="Benutzer" ToRole="Sanitage" />
+    <NavigationProperty Name="Schulen" Relationship="Self.fk_benutzer_schule" FromRole="Benutzer" ToRole="Schulen" />
+    <NavigationProperty Name="Springertage" Relationship="Self.fk_benutzer_springertage" FromRole="Benutzer" ToRole="Springertage" />
+    <NavigationProperty Name="Tage" Relationship="OrgaSANItionModel.fk_tage_benutzer_sani1" FromRole="Benutzer" ToRole="Tage" />
+    <NavigationProperty Name="Tage1" Relationship="OrgaSANItionModel.fk_tage_benutzer_sani2" FromRole="Benutzer" ToRole="Tage" />
+    <NavigationProperty Name="Tage2" Relationship="OrgaSANItionModel.fk_tage_benutzer_springer1" FromRole="Benutzer" ToRole="Tage" />
+    <NavigationProperty Name="Tage3" Relationship="OrgaSANItionModel.fk_tage_benutzer_springer2" FromRole="Benutzer" ToRole="Tage" />
+  </EntityType>
+  <EntityType Name="Sanitage">
+    <Key>
+      <PropertyRef Name="Sanitage_ID" />
+    </Key>
+    <Property Name="Sanitage_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Montag" Type="String" MaxLength="5" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Dienstag" Type="String" MaxLength="5" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Mittwoch" Type="String" MaxLength="5" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Donnerstag" Type="String" MaxLength="5" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Freitag" Type="String" MaxLength="5" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="Benutzer" Relationship="Self.fk_benutzer_sanitage" FromRole="Sanitage" ToRole="Benutzer" />
+  </EntityType>
+  <EntityType Name="Schulen">
+    <Key>
+      <PropertyRef Name="S_ID" />
+    </Key>
+    <Property Name="S_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="Benutzer" Relationship="Self.fk_benutzer_schule" FromRole="Schulen" ToRole="Benutzer" />
+  </EntityType>
+  <EntityType Name="Springertage">
+    <Key>
+      <PropertyRef Name="Springertage_ID" />
+    </Key>
+    <Property Name="Springertage_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Montag" Type="String" MaxLength="5" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Dienstag" Type="String" MaxLength="5" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Mittwoch" Type="String" MaxLength="5" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Donnerstag" Type="String" MaxLength="5" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Freitag" Type="String" MaxLength="5" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="Benutzer" Relationship="Self.fk_benutzer_springertage" FromRole="Springertage" ToRole="Benutzer" />
+  </EntityType>
+  <Association Name="fk_benutzer_benutzer">
+    <End Role="Benutzer" Type="Self.Benutzer" Multiplicity="0..1" />
+    <End Role="Benutzer1" Type="Self.Benutzer" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Benutzer">
+        <PropertyRef Name="B_ID" />
+      </Principal>
+      <Dependent Role="Benutzer1">
+        <PropertyRef Name="FavPartner" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_benutzer_sanitage">
+    <End Role="Sanitage" Type="Self.Sanitage" Multiplicity="0..1" />
+    <End Role="Benutzer" Type="Self.Benutzer" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Sanitage">
+        <PropertyRef Name="Sanitage_ID" />
+      </Principal>
+      <Dependent Role="Benutzer">
+        <PropertyRef Name="Sanitage_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_benutzer_schule">
+    <End Role="Schulen" Type="Self.Schulen" Multiplicity="1" />
+    <End Role="Benutzer" Type="Self.Benutzer" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Schulen">
+        <PropertyRef Name="S_ID" />
+      </Principal>
+      <Dependent Role="Benutzer">
+        <PropertyRef Name="Schul_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_benutzer_springertage">
+    <End Role="Springertage" Type="Self.Springertage" Multiplicity="0..1" />
+    <End Role="Benutzer" Type="Self.Benutzer" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Springertage">
+        <PropertyRef Name="Springertage_ID" />
+      </Principal>
+      <Dependent Role="Benutzer">
+        <PropertyRef Name="Springertage_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="OrgaSANItionEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Benutzer" EntityType="Self.Benutzer" />
+    <EntitySet Name="Sanitage" EntityType="Self.Sanitage" />
+    <EntitySet Name="Schulen" EntityType="Self.Schulen" />
+    <EntitySet Name="Springertage" EntityType="Self.Springertage" />
+    <AssociationSet Name="fk_benutzer_benutzer" Association="Self.fk_benutzer_benutzer">
+      <End Role="Benutzer" EntitySet="Benutzer" />
+      <End Role="Benutzer1" EntitySet="Benutzer" />
+    </AssociationSet>
+    <AssociationSet Name="fk_benutzer_sanitage" Association="Self.fk_benutzer_sanitage">
+      <End Role="Sanitage" EntitySet="Sanitage" />
+      <End Role="Benutzer" EntitySet="Benutzer" />
+    </AssociationSet>
+    <AssociationSet Name="fk_benutzer_schule" Association="Self.fk_benutzer_schule">
+      <End Role="Schulen" EntitySet="Schulen" />
+      <End Role="Benutzer" EntitySet="Benutzer" />
+    </AssociationSet>
+    <AssociationSet Name="fk_benutzer_springertage" Association="Self.fk_benutzer_springertage">
+      <End Role="Springertage" EntitySet="Springertage" />
+      <End Role="Benutzer" EntitySet="Benutzer" />
+    </AssociationSet>
+    <EntitySet Name="Tage" EntityType="OrgaSANItionModel.Tage" />
+    <AssociationSet Name="fk_tage_benutzer_sani1" Association="OrgaSANItionModel.fk_tage_benutzer_sani1">
+      <End Role="Benutzer" EntitySet="Benutzer" />
+      <End Role="Tage" EntitySet="Tage" />
+    </AssociationSet>
+    <AssociationSet Name="fk_tage_benutzer_sani2" Association="OrgaSANItionModel.fk_tage_benutzer_sani2">
+      <End Role="Benutzer" EntitySet="Benutzer" />
+      <End Role="Tage" EntitySet="Tage" />
+    </AssociationSet>
+    <AssociationSet Name="fk_tage_benutzer_springer1" Association="OrgaSANItionModel.fk_tage_benutzer_springer1">
+      <End Role="Benutzer" EntitySet="Benutzer" />
+      <End Role="Tage" EntitySet="Tage" />
+    </AssociationSet>
+    <AssociationSet Name="fk_tage_benutzer_springer2" Association="OrgaSANItionModel.fk_tage_benutzer_springer2">
+      <End Role="Benutzer" EntitySet="Benutzer" />
+      <End Role="Tage" EntitySet="Tage" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="Tage">
+    <Key>
+      <PropertyRef Name="Tag_ID" />
+    </Key>
+    <Property Name="Tag_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Datum" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
+    <Property Name="Sani1" Type="Int32" />
+    <Property Name="Sani2" Type="Int32" />
+    <Property Name="Springer1" Type="Int32" />
+    <Property Name="Springer2" Type="Int32" />
+    <NavigationProperty Name="Benutzer" Relationship="OrgaSANItionModel.fk_tage_benutzer_sani1" FromRole="Tage" ToRole="Benutzer" />
+    <NavigationProperty Name="Benutzer1" Relationship="OrgaSANItionModel.fk_tage_benutzer_sani2" FromRole="Tage" ToRole="Benutzer" />
+    <NavigationProperty Name="Benutzer2" Relationship="OrgaSANItionModel.fk_tage_benutzer_springer1" FromRole="Tage" ToRole="Benutzer" />
+    <NavigationProperty Name="Benutzer3" Relationship="OrgaSANItionModel.fk_tage_benutzer_springer2" FromRole="Tage" ToRole="Benutzer" />
+  </EntityType>
+  <Association Name="fk_tage_benutzer_sani1">
+    <End Type="OrgaSANItionModel.Benutzer" Role="Benutzer" Multiplicity="0..1" />
+    <End Type="OrgaSANItionModel.Tage" Role="Tage" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Benutzer">
+        <PropertyRef Name="B_ID" />
+      </Principal>
+      <Dependent Role="Tage">
+        <PropertyRef Name="Sani1" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_tage_benutzer_sani2">
+    <End Type="OrgaSANItionModel.Benutzer" Role="Benutzer" Multiplicity="0..1" />
+    <End Type="OrgaSANItionModel.Tage" Role="Tage" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Benutzer">
+        <PropertyRef Name="B_ID" />
+      </Principal>
+      <Dependent Role="Tage">
+        <PropertyRef Name="Sani2" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_tage_benutzer_springer1">
+    <End Type="OrgaSANItionModel.Benutzer" Role="Benutzer" Multiplicity="0..1" />
+    <End Type="OrgaSANItionModel.Tage" Role="Tage" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Benutzer">
+        <PropertyRef Name="B_ID" />
+      </Principal>
+      <Dependent Role="Tage">
+        <PropertyRef Name="Springer1" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_tage_benutzer_springer2">
+    <End Type="OrgaSANItionModel.Benutzer" Role="Benutzer" Multiplicity="0..1" />
+    <End Type="OrgaSANItionModel.Tage" Role="Tage" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Benutzer">
+        <PropertyRef Name="B_ID" />
+      </Principal>
+      <Dependent Role="Tage">
+        <PropertyRef Name="Springer2" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema>

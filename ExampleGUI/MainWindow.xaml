@@ -1,0 +1,49 @@
+﻿<Window x:Class="ExampleGUI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ExampleGUI"
+        mc:Ignorable="d"
+        Title="Dashboard" Height="540" Width="960" Background="#FF252C47" WindowStyle="SingleBorderWindow"
+        WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="250"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0" Background="#FF181E36">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="155"/>
+                <RowDefinition/>
+                <RowDefinition Height="75"/>
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0">
+                <Image Width="75" Height="75" Margin="0,15,0,10" Source="/werbung.jpg"/>
+                <TextBlock Text="OrgaSANItion" HorizontalAlignment="Center" FontSize="30" Foreground="White"/>
+                <Separator Margin="10,10,10,0" BorderBrush="White"/>
+            </StackPanel>
+            <StackPanel Grid.Row="1">
+                <Button x:Name="btn_Dashboard" Click="btn_Dashboard_Click" Content="Dashboard" Margin="30,25,30,0" Padding="0,5" FontSize="22" Foreground="#FF007EF9" FontFamily="Nirmala UI" BorderThickness="0" BorderBrush="White" Background="#FF181E36"/>
+                <Button x:Name="btn_Server" Click="btn_Server_Click" Content="Server" Margin="30,25,30,0" Padding="0,5" FontSize="22" Foreground="#FF007EF9" FontFamily="Nirmala UI" BorderThickness="0" BorderBrush="White" Background="#FF181E36"/>
+                <Button x:Name="btn_unknown2" Content="unknown2" Margin="30,25,30,0" Padding="0,5" FontSize="22" Foreground="#FF007EF9" FontFamily="Nirmala UI" BorderThickness="0" BorderBrush="White" Background="#FF181E36"/>
+                <Button x:Name="btn_unknown3" Content="unknown3" Margin="30,25,30,0" Padding="0,5" FontSize="22" Foreground="#FF007EF9" FontFamily="Nirmala UI" BorderThickness="0" BorderBrush="White" Background="#FF181E36"/>
+                
+            </StackPanel>
+            <DockPanel Grid.Row="2" LastChildFill="True">
+                <Separator DockPanel.Dock="Top" Margin="10,0" BorderBrush="White"/>
+                <Grid DockPanel.Dock="Bottom">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Button x:Name="btn_quit" Click="btn_quit_Click" Content="Quit" Grid.Column="0" Margin="15" FontSize="22" Foreground="#FF007EF9" FontFamily="Nirmala UI" BorderThickness="0" BorderBrush="White" Background="#FF181E36"/>
+                    <Button x:Name="btn_settings" Content="Settings" Grid.Column="1" Margin="15" FontSize="22" Foreground="#FF007EF9" FontFamily="Nirmala UI" BorderThickness="0" BorderBrush="White" Background="#FF181E36"/>
+                </Grid>
+            </DockPanel>
+        </Grid>
+        <Frame x:Name="MainFrame" Grid.Column="1" NavigationUIVisibility="Hidden">
+            
+        </Frame>
+    </Grid>
+</Window>
