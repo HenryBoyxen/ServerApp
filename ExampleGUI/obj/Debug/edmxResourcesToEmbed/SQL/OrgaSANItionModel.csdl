@@ -151,7 +151,7 @@
       <PropertyRef Name="Tag_ID" />
     </Key>
     <Property Name="Tag_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="Datum" Type="String" Nullable="false" MaxLength="32" FixedLength="false" Unicode="false" />
+    <Property Name="Datum" Type="DateTime" Precision="0" Nullable="false" />
     <Property Name="Sani1" Type="Int32" />
     <Property Name="Sani2" Type="Int32" />
     <Property Name="Springer1" Type="Int32" />

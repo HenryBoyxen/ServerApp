@@ -52,7 +52,7 @@
       <PropertyRef Name="Tag_ID" />
     </Key>
     <Property Name="Tag_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="Datum" Type="varchar" MaxLength="32" Nullable="false" />
+    <Property Name="Datum" Type="date" Nullable="false" />
     <Property Name="Sani1" Type="int" />
     <Property Name="Sani2" Type="int" />
     <Property Name="Springer1" Type="int" />

@@ -110,14 +110,14 @@ namespace ExampleGUI
                 case "Registrieren_Check_benutzername":
                     Request_registrieren_Check_benutzername(stream, sw);
                     break;
-                case "HomePage_initializeTextblocks":
-                    Request_homepage_initializeTextblocks(stream, sw);
+                case "GetSanisAndSpringerFromDate":
+                    Request_GetSanisAndSpringerFromDate(stream, sw);
                     break;
                 case "HomePage_initializeNextDuty":
                     Request_homepage_initializeNextDuty(stream, sw);
                     break;
-                case "Calender_initializeCalender":
-                    Request_calender_initializeCalender(stream, sw);
+                case "Calender_initializeAllDuties":
+                    Request_calender_initializeAllDuties(stream, sw);
                     break;
                 case "Orga_EintragungDienstplan":
                     Request_orga_eintragungDienstplan(stream, sw);
@@ -127,6 +127,26 @@ namespace ExampleGUI
             }
         }
 
+        #region intern methods to simplify request methods
+
+        private static int? UsernameToUID(string username)
+        {
+            int? userID = null;
+            using (OrgaSANItionEntities context = new OrgaSANItionEntities())
+            {
+                var query = context.Benutzer.SqlQuery("SELECT * FROM Benutzer WHERE Benutzername = {0}", username);
+                foreach (Benutzer b in query)
+                {
+                    userID = b.B_ID;
+                }
+            }
+            return userID;
+        }
+
+        #endregion
+
+
+        #region Reqeuest methods
         private static void Request_anmelden_anmelden(NetworkStream pStream, StreamWriter pStreamWriter)
         {
             //set benutzername from client
@@ -222,10 +242,9 @@ namespace ExampleGUI
             }
         }
 
-        private static void Request_homepage_initializeTextblocks(NetworkStream pStream, StreamWriter pStreamWriter)
+        private static void Request_GetSanisAndSpringerFromDate(NetworkStream pStream, StreamWriter pStreamWriter)
         {
-            DateTime dateTime = DateTime.Now;
-            string date = dateTime.ToShortDateString();
+            string date = ReadStreamWithApproval(pStream, pStreamWriter);
 
             string sani1 = "null";
             string sani2 = "null";
@@ -296,378 +315,59 @@ namespace ExampleGUI
         private static void Request_homepage_initializeNextDuty(NetworkStream pStream, StreamWriter pStreamWriter)
         {
             string username = ReadStreamWithApproval(pStream, pStreamWriter);
-            int? userID = null;
+            int? userID = UsernameToUID(username);
+            DateTime? date = null;
+            string function = null;
             using (OrgaSANItionEntities context = new OrgaSANItionEntities())
             {
-                var query = context.Benutzer.SqlQuery("SELECT * FROM Benutzer WHERE Benutzername = {0}",username);
-                foreach (Benutzer b in query)
-                {
-                    userID = b.B_ID;
-                }
-            }
-
-            string date = null;
-            using (OrgaSANItionEntities context = new OrgaSANItionEntities())
-            {
-                var query = context.Tage.SqlQuery("SELECT TOP(1) * FROM Tage WHERE Sani1 = {0}",userID);
+                var query = context.Tage.SqlQuery("SELECT TOP(1) * FROM Tage WHERE (Datum >= {0}) AND (Sani1 = {1} OR Sani2 = {1} OR Springer1 = {1} OR Springer2 = {1})", DateTime.Now.ToString("yyyy-MM-dd"), userID);
                 foreach (Tage t in query)
                 {
                     date = t.Datum;
+                    if (t.Sani1 == userID || t.Sani2 == userID)
+                        function = "Sanitäter";
+                    else
+                        function = "Springer";
                 }
             }
             if (date != null)
-                pStreamWriter.Write(date);
+            {
+                DateTime date2 = (DateTime)date;
+                pStreamWriter.Write(date2.ToShortDateString());
+                ReadStreamString(pStream);
+                pStreamWriter.Write(function);
+
+            }
             else
+            {
                 pStreamWriter.Write("null");
+                ReadStreamString(pStream);
+                pStreamWriter.Write("null");
+            }
+                
         }
 
-        private static void Request_calender_initializeCalender(NetworkStream pStream, StreamWriter pStreamWriter)
+        private static void Request_calender_initializeAllDuties(NetworkStream pStream, StreamWriter pStreamWriter)
         {
-            string date1 = ReadStreamWithApproval(pStream, pStreamWriter);
-            string date2 = ReadStreamWithApproval(pStream, pStreamWriter);
-            string date3 = ReadStreamWithApproval(pStream, pStreamWriter);
-            string date4 = ReadStreamWithApproval(pStream, pStreamWriter);
-            string date5 = ReadStreamWithApproval(pStream, pStreamWriter);
-            Debug.WriteLine(date1);
-            Debug.WriteLine(date2);
-            Debug.WriteLine(date3);
-            Debug.WriteLine(date4);
-            Debug.WriteLine(date5);
-            string ifBenutzerNull = "fehlt";
-
+            string username = ReadStreamWithApproval(pStream, pStreamWriter);
+            int? userID = UsernameToUID(username);
+            Queue<string> queue = new Queue<string>();
             using (OrgaSANItionEntities context = new OrgaSANItionEntities())
             {
-                var mainQuery1 = context.Tage.SqlQuery("SELECT * FROM Tage WHERE Datum = {0}", date1);
-                foreach(Tage t in mainQuery1)
+                var query = context.Tage.SqlQuery("SELECT * FROM Tage WHERE (Datum >= {0}) AND (Sani1 = {1} OR Sani2 = {1} OR " +
+                    "Springer1 = {1} OR Springer2 = {1})",DateTime.Now.ToString("yyyy-MM-dd"), userID);
+                foreach (Tage t in query)
                 {
-                    int? B_ID_sani1 = t.Sani1;
-                    int? B_ID_sani2 = t.Sani2;
-                    int? B_ID_springer1 = t.Springer1;
-                    int? B_ID_springer2 = t.Springer2;
-
-                    if(B_ID_sani1 != null)
-                    {
-                        var query = context.Benutzer.SqlQuery("SELECT * FROM Benutzer WHERE B_ID = {0}", B_ID_sani1);
-                        foreach (Benutzer b in query)
-                        {
-                            pStreamWriter.Write(b.Vorname + " " + b.Nachname);
-                        }
-                    }
+                    queue.Enqueue(t.Datum.ToShortDateString());
+                    if (t.Sani1 == userID || t.Sani2 == userID)
+                        queue.Enqueue("Sanitäter");
                     else
-                    {
-                        pStreamWriter.Write(ifBenutzerNull);
-                    }
-                    ReadStreamString(pStream);
-
-                    if (B_ID_sani1 != null)
-                    {
-                        var query = context.Benutzer.SqlQuery("SELECT * FROM Benutzer WHERE B_ID = {0}", B_ID_sani2);
-                        foreach (Benutzer b in query)
-                        {
-                            pStreamWriter.Write(b.Vorname + " " + b.Nachname);
-                        }
-                    }
-                    else
-                    {
-                        pStreamWriter.Write(ifBenutzerNull);
-                    }
-                    ReadStreamString(pStream);
-
-                    if (B_ID_sani1 != null)
-                    {
-                        var query = context.Benutzer.SqlQuery("SELECT * FROM Benutzer WHERE B_ID = {0}", B_ID_springer1);
-                        foreach (Benutzer b in query)
-                        {
-                            pStreamWriter.Write(b.Vorname + " " + b.Nachname);
-                        }
-                    }
-                    else
-                    {
-                        pStreamWriter.Write(ifBenutzerNull);
-                    }
-                    ReadStreamString(pStream);
-
-                    if (B_ID_sani1 != null)
-                    {
-                        var query = context.Benutzer.SqlQuery("SELECT * FROM Benutzer WHERE B_ID = {0}", B_ID_springer2);
-                        foreach (Benutzer b in query)
-                        {
-                            pStreamWriter.Write(b.Vorname + " " + b.Nachname);
-                        }
-                    }
-                    else
-                    {
-                        pStreamWriter.Write(ifBenutzerNull);
-                    }
-                    ReadStreamString(pStream);
-                }
-
-
-                var mainQuery2 = context.Tage.SqlQuery("SELECT * FROM Tage WHERE Datum = {0}", date2);
-                foreach (Tage t in mainQuery2)
-                {
-                    int? B_ID_sani1 = t.Sani1;
-                    int? B_ID_sani2 = t.Sani2;
-                    int? B_ID_springer1 = t.Springer1;
-                    int? B_ID_springer2 = t.Springer2;
-
-                    if (B_ID_sani1 != null)
-                    {
-                        var query = context.Benutzer.SqlQuery("SELECT * FROM Benutzer WHERE B_ID = {0}", B_ID_sani1);
-                        foreach (Benutzer b in query)
-                        {
-                            pStreamWriter.Write(b.Vorname + " " + b.Nachname);
-                        }
-                    }
-                    else
-                    {
-                        pStreamWriter.Write(ifBenutzerNull);
-                    }
-                    ReadStreamString(pStream);
-
-                    if (B_ID_sani1 != null)
-                    {
-                        var query = context.Benutzer.SqlQuery("SELECT * FROM Benutzer WHERE B_ID = {0}", B_ID_sani2);
-                        foreach (Benutzer b in query)
-                        {
-                            pStreamWriter.Write(b.Vorname + " " + b.Nachname);
-                        }
-                    }
-                    else
-                    {
-                        pStreamWriter.Write(ifBenutzerNull);
-                    }
-                    ReadStreamString(pStream);
-
-                    if (B_ID_sani1 != null)
-                    {
-                        var query = context.Benutzer.SqlQuery("SELECT * FROM Benutzer WHERE B_ID = {0}", B_ID_springer1);
-                        foreach (Benutzer b in query)
-                        {
-                            pStreamWriter.Write(b.Vorname + " " + b.Nachname);
-                        }
-                    }
-                    else
-                    {
-                        pStreamWriter.Write(ifBenutzerNull);
-                    }
-                    ReadStreamString(pStream);
-
-                    if (B_ID_sani1 != null)
-                    {
-                        var query = context.Benutzer.SqlQuery("SELECT * FROM Benutzer WHERE B_ID = {0}", B_ID_springer2);
-                        foreach (Benutzer b in query)
-                        {
-                            pStreamWriter.Write(b.Vorname + " " + b.Nachname);
-                        }
-                    }
-                    else
-                    {
-                        pStreamWriter.Write(ifBenutzerNull);
-                    }
-                    ReadStreamString(pStream);
-                }
-
-
-                var mainQuery3 = context.Tage.SqlQuery("SELECT * FROM Tage WHERE Datum = {0}", date3);
-                Debug.WriteLine(date3);
-                foreach (Tage t in mainQuery3)
-                {
-                    int? B_ID_sani1 = t.Sani1;
-                    int? B_ID_sani2 = t.Sani2;
-                    int? B_ID_springer1 = t.Springer1;
-                    int? B_ID_springer2 = t.Springer2;
-
-                    if (B_ID_sani1 != null)
-                    {
-                        var query = context.Benutzer.SqlQuery("SELECT * FROM Benutzer WHERE B_ID = {0}", B_ID_sani1);
-                        foreach (Benutzer b in query)
-                        {
-                            pStreamWriter.Write(b.Vorname + " " + b.Nachname);
-                        }
-                    }
-                    else
-                    {
-                        pStreamWriter.Write(ifBenutzerNull);
-                    }
-                    ReadStreamString(pStream);
-
-                    if (B_ID_sani1 != null)
-                    {
-                        var query = context.Benutzer.SqlQuery("SELECT * FROM Benutzer WHERE B_ID = {0}", B_ID_sani2);
-                        foreach (Benutzer b in query)
-                        {
-                            pStreamWriter.Write(b.Vorname + " " + b.Nachname);
-                        }
-                    }
-                    else
-                    {
-                        pStreamWriter.Write(ifBenutzerNull);
-                    }
-                    ReadStreamString(pStream);
-
-                    if (B_ID_sani1 != null)
-                    {
-                        var query = context.Benutzer.SqlQuery("SELECT * FROM Benutzer WHERE B_ID = {0}", B_ID_springer1);
-                        foreach (Benutzer b in query)
-                        {
-                            pStreamWriter.Write(b.Vorname + " " + b.Nachname);
-                        }
-                    }
-                    else
-                    {
-                        pStreamWriter.Write(ifBenutzerNull);
-                    }
-                    ReadStreamString(pStream);
-
-                    if (B_ID_sani1 != null)
-                    {
-                        var query = context.Benutzer.SqlQuery("SELECT * FROM Benutzer WHERE B_ID = {0}", B_ID_springer2);
-                        foreach (Benutzer b in query)
-                        {
-                            pStreamWriter.Write(b.Vorname + " " + b.Nachname);
-                        }
-                    }
-                    else
-                    {
-                        pStreamWriter.Write(ifBenutzerNull);
-                    }
-                    ReadStreamString(pStream);
-                }
-
-
-                var mainQuery4 = context.Tage.SqlQuery("SELECT * FROM Tage WHERE Datum = {0}", date4);
-                foreach (Tage t in mainQuery4)
-                {
-                    int? B_ID_sani1 = t.Sani1;
-                    int? B_ID_sani2 = t.Sani2;
-                    int? B_ID_springer1 = t.Springer1;
-                    int? B_ID_springer2 = t.Springer2;
-
-                    if (B_ID_sani1 != null)
-                    {
-                        var query = context.Benutzer.SqlQuery("SELECT * FROM Benutzer WHERE B_ID = {0}", B_ID_sani1);
-                        foreach (Benutzer b in query)
-                        {
-                            pStreamWriter.Write(b.Vorname + " " + b.Nachname);
-                        }
-                    }
-                    else
-                    {
-                        pStreamWriter.Write(ifBenutzerNull);
-                    }
-                    ReadStreamString(pStream);
-
-                    if (B_ID_sani1 != null)
-                    {
-                        var query = context.Benutzer.SqlQuery("SELECT * FROM Benutzer WHERE B_ID = {0}", B_ID_sani2);
-                        foreach (Benutzer b in query)
-                        {
-                            pStreamWriter.Write(b.Vorname + " " + b.Nachname);
-                        }
-                    }
-                    else
-                    {
-                        pStreamWriter.Write(ifBenutzerNull);
-                    }
-                    ReadStreamString(pStream);
-
-                    if (B_ID_sani1 != null)
-                    {
-                        var query = context.Benutzer.SqlQuery("SELECT * FROM Benutzer WHERE B_ID = {0}", B_ID_springer1);
-                        foreach (Benutzer b in query)
-                        {
-                            pStreamWriter.Write(b.Vorname + " " + b.Nachname);
-                        }
-                    }
-                    else
-                    {
-                        pStreamWriter.Write(ifBenutzerNull);
-                    }
-                    ReadStreamString(pStream);
-
-                    if (B_ID_sani1 != null)
-                    {
-                        var query = context.Benutzer.SqlQuery("SELECT * FROM Benutzer WHERE B_ID = {0}", B_ID_springer2);
-                        foreach (Benutzer b in query)
-                        {
-                            pStreamWriter.Write(b.Vorname + " " + b.Nachname);
-                        }
-                    }
-                    else
-                    {
-                        pStreamWriter.Write(ifBenutzerNull);
-                    }
-                    ReadStreamString(pStream);
-                }
-
-
-                var mainQuery5 = context.Tage.SqlQuery("SELECT * FROM Tage WHERE Datum = {0}", date5);
-                foreach (Tage t in mainQuery5)
-                {
-                    int? B_ID_sani1 = t.Sani1;
-                    int? B_ID_sani2 = t.Sani2;
-                    int? B_ID_springer1 = t.Springer1;
-                    int? B_ID_springer2 = t.Springer2;
-
-                    if (B_ID_sani1 != null)
-                    {
-                        var query = context.Benutzer.SqlQuery("SELECT * FROM Benutzer WHERE B_ID = {0}", B_ID_sani1);
-                        foreach (Benutzer b in query)
-                        {
-                            pStreamWriter.Write(b.Vorname + " " + b.Nachname);
-                        }
-                    }
-                    else
-                    {
-                        pStreamWriter.Write(ifBenutzerNull);
-                    }
-                    ReadStreamString(pStream);
-
-                    if (B_ID_sani1 != null)
-                    {
-                        var query = context.Benutzer.SqlQuery("SELECT * FROM Benutzer WHERE B_ID = {0}", B_ID_sani2);
-                        foreach (Benutzer b in query)
-                        {
-                            pStreamWriter.Write(b.Vorname + " " + b.Nachname);
-                        }
-                    }
-                    else
-                    {
-                        pStreamWriter.Write(ifBenutzerNull);
-                    }
-                    ReadStreamString(pStream);
-
-                    if (B_ID_sani1 != null)
-                    {
-                        var query = context.Benutzer.SqlQuery("SELECT * FROM Benutzer WHERE B_ID = {0}", B_ID_springer1);
-                        foreach (Benutzer b in query)
-                        {
-                            pStreamWriter.Write(b.Vorname + " " + b.Nachname);
-                        }
-                    }
-                    else
-                    {
-                        pStreamWriter.Write(ifBenutzerNull);
-                    }
-                    ReadStreamString(pStream);
-
-                    if (B_ID_sani1 != null)
-                    {
-                        var query = context.Benutzer.SqlQuery("SELECT * FROM Benutzer WHERE B_ID = {0}", B_ID_springer2);
-                        foreach (Benutzer b in query)
-                        {
-                            pStreamWriter.Write(b.Vorname + " " + b.Nachname);
-                        }
-                    }
-                    else
-                    {
-                        pStreamWriter.Write(ifBenutzerNull);
-                    }
-                    ReadStreamString(pStream);
+                        queue.Enqueue("Springer");
                 }
             }
-            pStreamWriter.Write("End");
+            //send queue
+            IFormatter formatter = new BinaryFormatter();
+            formatter.Serialize(pStream, queue);
         }
     
         private static void Request_orga_eintragungDienstplan(NetworkStream pStream, StreamWriter pStreamWriter)
@@ -730,4 +430,5 @@ namespace ExampleGUI
     
     
     }
+    #endregion
 }
