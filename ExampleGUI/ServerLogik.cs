@@ -113,6 +113,9 @@ namespace ExampleGUI
                 case "HomePage_initializeTextblocks":
                     Request_homepage_initializeTextblocks(stream, sw);
                     break;
+                case "HomePage_initializeNextDuty":
+                    Request_homepage_initializeNextDuty(stream, sw);
+                    break;
                 case "Calender_initializeCalender":
                     Request_calender_initializeCalender(stream, sw);
                     break;
@@ -280,14 +283,42 @@ namespace ExampleGUI
                     }
                 }
             }
-            
-            pStreamWriter.Write(sani1);
-            ReadStreamString(pStream);
-            pStreamWriter.Write(sani2);
-            ReadStreamString(pStream);
-            pStreamWriter.Write(springer1);
-            ReadStreamString(pStream);
-            pStreamWriter.Write(springer2);
+            //send array
+            string[] array = new string[4];
+            array[0] = sani1;
+            array[1] = sani2;
+            array[2] = springer1;
+            array[3] = springer2;
+            IFormatter formatter = new BinaryFormatter();
+            formatter.Serialize(pStream, array);
+        }
+
+        private static void Request_homepage_initializeNextDuty(NetworkStream pStream, StreamWriter pStreamWriter)
+        {
+            string username = ReadStreamWithApproval(pStream, pStreamWriter);
+            int? userID = null;
+            using (OrgaSANItionEntities context = new OrgaSANItionEntities())
+            {
+                var query = context.Benutzer.SqlQuery("SELECT * FROM Benutzer WHERE Benutzername = {0}",username);
+                foreach (Benutzer b in query)
+                {
+                    userID = b.B_ID;
+                }
+            }
+
+            string date = null;
+            using (OrgaSANItionEntities context = new OrgaSANItionEntities())
+            {
+                var query = context.Tage.SqlQuery("SELECT TOP(1) * FROM Tage WHERE Sani1 = {0}",userID);
+                foreach (Tage t in query)
+                {
+                    date = t.Datum;
+                }
+            }
+            if (date != null)
+                pStreamWriter.Write(date);
+            else
+                pStreamWriter.Write("null");
         }
 
         private static void Request_calender_initializeCalender(NetworkStream pStream, StreamWriter pStreamWriter)

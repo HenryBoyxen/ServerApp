@@ -1,7 +1,8 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\ExampleGUI"
   ],
-  "SelectedNode": "\\ExampleGUI.sln",
+  "SelectedNode": "\\ExampleGUI\\ServerLogik.cs",
   "PreviewInSolutionExplorer": false
 }

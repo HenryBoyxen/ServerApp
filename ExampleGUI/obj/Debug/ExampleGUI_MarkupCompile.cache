@@ -4,16 +4,16 @@
 winexe
 C#
 .cs
-C:\Users\Henry\Documents\Programmieren\OrgaSANItion\Testprojekte\ExampleGUI\ExampleGUI\obj\Debug\
+D:\Github\ServerApp\ExampleGUI\obj\Debug\
 ExampleGUI
 none
 false
 DEBUG;TRACE
-C:\Users\Henry\Documents\Programmieren\OrgaSANItion\Testprojekte\ExampleGUI\ExampleGUI\App.xaml
+D:\Github\ServerApp\ExampleGUI\App.xaml
 3-323127522
 2-362050529
 1634875693
-18-1865210379
+18865102037
 Dashboard.xaml;MainWindow.xaml;Server.xaml;
 
 False
