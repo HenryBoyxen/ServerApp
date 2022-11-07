@@ -43,7 +43,7 @@ namespace ExampleGUI.SQL
         public virtual Benutzer Benutzer2 { get; set; }
         public virtual Sanitage Sanitage { get; set; }
         public virtual Schulen Schulen { get; set; }
-        public virtual Springertage Springertage { get; set; }
+        public virtual Sanitage Sanitage1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Tage> Tage { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

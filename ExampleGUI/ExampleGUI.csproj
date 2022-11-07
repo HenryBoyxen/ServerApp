@@ -126,9 +126,6 @@
     <Compile Include="SQL\Schulen.cs">
       <DependentUpon>OrgaSANItionModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="SQL\Springertage.cs">
-      <DependentUpon>OrgaSANItionModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="SQL\Tage.cs">
       <DependentUpon>OrgaSANItionModel.tt</DependentUpon>
     </Compile>

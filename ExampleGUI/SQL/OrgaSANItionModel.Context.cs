@@ -28,7 +28,6 @@ namespace ExampleGUI.SQL
         public virtual DbSet<Benutzer> Benutzer { get; set; }
         public virtual DbSet<Sanitage> Sanitage { get; set; }
         public virtual DbSet<Schulen> Schulen { get; set; }
-        public virtual DbSet<Springertage> Springertage { get; set; }
         public virtual DbSet<Tage> Tage { get; set; }
     }
 }

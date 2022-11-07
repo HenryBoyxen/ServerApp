@@ -18,6 +18,7 @@ namespace ExampleGUI.SQL
         public Sanitage()
         {
             this.Benutzer = new HashSet<Benutzer>();
+            this.Benutzer1 = new HashSet<Benutzer>();
         }
     
         public int Sanitage_ID { get; set; }
@@ -29,5 +30,7 @@ namespace ExampleGUI.SQL
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Benutzer> Benutzer { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Benutzer> Benutzer1 { get; set; }
     }
 }

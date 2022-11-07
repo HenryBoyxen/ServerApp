@@ -119,8 +119,14 @@ namespace ExampleGUI
                 case "Calender_initializeAllDuties":
                     Request_calender_initializeAllDuties(stream, sw);
                     break;
+                case "Eintragung_initializeCheckboxes":
+                    Request_eintragung_initializeCheckboxes(stream, sw);
+                    break;
+                case "Eintragung_eintragung":
+                    Request_eintragung_eintragung(stream, sw);
+                    break;
                 case "Orga_EintragungDienstplan":
-                    Request_orga_eintragungDienstplan(stream, sw);
+                    //Request_orga_eintragungDienstplan(stream, sw);
                     break;
                 default:
                     break;
@@ -141,6 +147,41 @@ namespace ExampleGUI
                 }
             }
             return userID;
+        }
+
+        private static int FindIDOfSanitage(string value1, string value2, string value3, string value4, string value5)
+        {
+            int ID = 0;
+
+            using (OrgaSANItionEntities context = new OrgaSANItionEntities())
+            {
+                var query = context.Sanitage.SqlQuery("SELECT * FROM Sanitage WHERE Montag = {0} AND " +
+                    "Dienstag = {1} AND Mittwoch = {2} AND Donnerstag = {3} AND Freitag = {4}",
+                    value1, value2, value3, value4, value5);
+                foreach (Sanitage sa in query)
+                {
+                    ID = sa.Sanitage_ID;
+                }
+            }
+            return ID;
+        }
+
+        private static string[] GetValuesOfSanitage(int SanitageID)
+        {
+            string[] values = new string[5];
+            using (OrgaSANItionEntities context = new OrgaSANItionEntities())
+            {
+                var query = context.Sanitage.SqlQuery("SELECT * FROM Sanitage WHERE Sanitage_ID = {0}",SanitageID);
+                foreach (Sanitage sa in query)
+                {
+                    values[0] = sa.Montag;
+                    values[1] = sa.Dienstag;
+                    values[2] = sa.Mittwoch;
+                    values[3] = sa.Donnerstag;
+                    values[4] = sa.Freitag;
+                }
+            }
+            return values;
         }
 
         #endregion
@@ -370,6 +411,92 @@ namespace ExampleGUI
             formatter.Serialize(pStream, queue);
         }
     
+        private static void Request_eintragung_initializeCheckboxes(NetworkStream pStream, StreamWriter pStreamWriter)
+        {
+            //Get Username
+            string username = ReadStreamWithApproval(pStream, pStreamWriter);
+            int? sanitageID = null;
+            int? springertageID = null;
+
+            //Get sanitageID
+            using (OrgaSANItionEntities context = new OrgaSANItionEntities())
+            {
+                var query = context.Benutzer.SqlQuery("SELECT * FROM Benutzer WHERE Benutzername = {0}", username);
+                foreach(Benutzer b in query)
+                {
+                    sanitageID = b.Sanitage_ID;
+                    springertageID = b.Springertage_ID;
+                }
+            }
+            string[] valuesSanitage = new string[5];
+            if (sanitageID != null)
+            {
+                int sanitageIDNotNull = (int)sanitageID;
+                valuesSanitage = GetValuesOfSanitage(sanitageIDNotNull);
+            }
+            else
+            {
+                valuesSanitage = GetValuesOfSanitage(0);
+            }
+
+            string[] valuesSpringertage = new string[5];
+            if (springertageID != null)
+            {
+                int springertageIDNotNull = (int)springertageID;
+                valuesSpringertage = GetValuesOfSanitage(springertageIDNotNull);
+            }
+            else
+            {
+                valuesSpringertage = GetValuesOfSanitage(0);
+            }
+            string[] array = valuesSanitage.Concat(valuesSpringertage).ToArray();
+
+            //Send array
+            IFormatter formatter = new BinaryFormatter();
+            formatter.Serialize(pStream, array);
+        }
+
+        private static void Request_eintragung_eintragung(NetworkStream pStream, StreamWriter pStreamWriter)
+        {
+            //Get Username
+            string username = ReadStreamWithApproval(pStream, pStreamWriter);
+            //Send ready
+            pStreamWriter.Write("continue");
+            //Get array
+            IFormatter formatter = new BinaryFormatter();
+            string[] array = (string[])formatter.Deserialize(pStream);
+            //Find ID of Sanitage
+            int sanitageID = FindIDOfSanitage(array[0], array[1], array[2], array[3], array[4]);
+            int springertageID = FindIDOfSanitage(array[5], array[6], array[7], array[8], array[9]);
+
+            Benutzer benutzer = new Benutzer();
+            using (OrgaSANItionEntities context = new OrgaSANItionEntities())
+            {
+                var query3 = context.Benutzer.SqlQuery("SELECT * FROM Benutzer WHERE Benutzername = {0}", username);
+                foreach (Benutzer b in query3)
+                {
+                    benutzer.B_ID = b.B_ID;
+                    benutzer.Vorname = b.Vorname;
+                    benutzer.Nachname = b.Nachname;
+                    benutzer.E_Mail = b.E_Mail;
+                    benutzer.Schul_ID = b.Schul_ID;
+                    benutzer.Benutzername = b.Benutzername;
+                    benutzer.Passwort = b.Passwort;
+                    benutzer.Sanitage_ID = sanitageID;
+                    benutzer.Springertage_ID = springertageID;
+                    benutzer.SaniScore = b.SaniScore;
+                    benutzer.SpringerScore = b.SpringerScore;
+                    benutzer.AnzahlDienste = b.AnzahlDienste;
+                    benutzer.FavPartner = b.FavPartner;
+                }
+                context.Benutzer.AddOrUpdate(benutzer);
+                context.SaveChanges();
+            }
+            //Send confirmation
+            pStreamWriter.Write("true");
+        }
+        
+        /*
         private static void Request_orga_eintragungDienstplan(NetworkStream pStream, StreamWriter pStreamWriter)
         {
             string benutzername = ReadStreamWithApproval(pStream, pStreamWriter);
@@ -428,7 +555,7 @@ namespace ExampleGUI
             }
         }
     
-    
+    */
     }
     #endregion
 }

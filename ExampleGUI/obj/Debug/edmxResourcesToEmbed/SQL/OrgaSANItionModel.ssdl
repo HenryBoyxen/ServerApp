@@ -36,17 +36,6 @@
     <Property Name="S_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Name" Type="varchar" MaxLength="255" Nullable="false" />
   </EntityType>
-  <EntityType Name="Springertage">
-    <Key>
-      <PropertyRef Name="Springertage_ID" />
-    </Key>
-    <Property Name="Springertage_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="Montag" Type="varchar" MaxLength="5" Nullable="false" />
-    <Property Name="Dienstag" Type="varchar" MaxLength="5" Nullable="false" />
-    <Property Name="Mittwoch" Type="varchar" MaxLength="5" Nullable="false" />
-    <Property Name="Donnerstag" Type="varchar" MaxLength="5" Nullable="false" />
-    <Property Name="Freitag" Type="varchar" MaxLength="5" Nullable="false" />
-  </EntityType>
   <EntityType Name="Tage">
     <Key>
       <PropertyRef Name="Tag_ID" />
@@ -70,7 +59,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="fk_benutzer_sanitage">
+  <Association Name="fk_benutzer_sanitageID">
     <End Role="Sanitage" Type="Self.Sanitage" Multiplicity="0..1" />
     <End Role="Benutzer" Type="Self.Benutzer" Multiplicity="*" />
     <ReferentialConstraint>
@@ -94,12 +83,12 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="fk_benutzer_springertage">
-    <End Role="Springertage" Type="Self.Springertage" Multiplicity="0..1" />
+  <Association Name="fk_benutzer_springertageID">
+    <End Role="Sanitage" Type="Self.Sanitage" Multiplicity="0..1" />
     <End Role="Benutzer" Type="Self.Benutzer" Multiplicity="*" />
     <ReferentialConstraint>
-      <Principal Role="Springertage">
-        <PropertyRef Name="Springertage_ID" />
+      <Principal Role="Sanitage">
+        <PropertyRef Name="Sanitage_ID" />
       </Principal>
       <Dependent Role="Benutzer">
         <PropertyRef Name="Springertage_ID" />
@@ -158,13 +147,12 @@
     <EntitySet Name="Benutzer" EntityType="Self.Benutzer" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Sanitage" EntityType="Self.Sanitage" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Schulen" EntityType="Self.Schulen" Schema="dbo" store:Type="Tables" />
-    <EntitySet Name="Springertage" EntityType="Self.Springertage" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Tage" EntityType="Self.Tage" Schema="dbo" store:Type="Tables" />
     <AssociationSet Name="fk_benutzer_benutzer" Association="Self.fk_benutzer_benutzer">
       <End Role="Benutzer" EntitySet="Benutzer" />
       <End Role="Benutzer1" EntitySet="Benutzer" />
     </AssociationSet>
-    <AssociationSet Name="fk_benutzer_sanitage" Association="Self.fk_benutzer_sanitage">
+    <AssociationSet Name="fk_benutzer_sanitageID" Association="Self.fk_benutzer_sanitageID">
       <End Role="Sanitage" EntitySet="Sanitage" />
       <End Role="Benutzer" EntitySet="Benutzer" />
     </AssociationSet>
@@ -172,8 +160,8 @@
       <End Role="Schulen" EntitySet="Schulen" />
       <End Role="Benutzer" EntitySet="Benutzer" />
     </AssociationSet>
-    <AssociationSet Name="fk_benutzer_springertage" Association="Self.fk_benutzer_springertage">
-      <End Role="Springertage" EntitySet="Springertage" />
+    <AssociationSet Name="fk_benutzer_springertageID" Association="Self.fk_benutzer_springertageID">
+      <End Role="Sanitage" EntitySet="Sanitage" />
       <End Role="Benutzer" EntitySet="Benutzer" />
     </AssociationSet>
     <AssociationSet Name="fk_tage_benutzer_sani1" Association="Self.fk_tage_benutzer_sani1">
