@@ -16,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ExampleGUI.Classes;
 
 namespace ExampleGUI
 {
@@ -34,6 +35,7 @@ namespace ExampleGUI
         {
             btn_server_start.IsEnabled = false;
             btn_server_stop.IsEnabled = true;
+            DutyPlan.CheckDutyPlan();
             _tokenSource = new CancellationTokenSource();
             var token = _tokenSource.Token;
             try

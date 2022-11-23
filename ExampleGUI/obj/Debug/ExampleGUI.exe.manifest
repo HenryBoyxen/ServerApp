@@ -66,14 +66,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ExampleGUI.exe" size="103904">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ExampleGUI.exe" size="112608">
       <assemblyIdentity name="ExampleGUI" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>KWxjf6dPcbsxeKVtvCCx97iS+bXKPzJb8LU9nUyaTyY=</dsig:DigestValue>
+        <dsig:DigestValue>QzdCW8dVKOo1ZJ6TZ5SZb+GhhhV6teMq8kQ4THOweRo=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

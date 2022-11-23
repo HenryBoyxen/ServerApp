@@ -12,6 +12,7 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Diagnostics;
 using System.Data.Entity.Migrations;
+using ExampleGUI.Classes;
 
 namespace ExampleGUI
 {
@@ -211,6 +212,7 @@ namespace ExampleGUI
                 }
             }
             _serverPage.Dispatcher.Invoke(() => _serverPage.txt_server.Text = "Sending answer...\n" + _serverPage.txt_server.Text);
+            DutyPlan.CheckDutyPlan();
             pStreamWriter.Write(sqlPassword);
         }
 
