@@ -95,14 +95,21 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Classes\DutyPlan.cs" />
+    <Compile Include="Classes\ClientCommunicator.cs" />
+    <Compile Include="Classes\DateTimeExtension.cs" />
+    <Compile Include="Classes\DBDutyPlanManager.cs" />
+    <Compile Include="Classes\DBUserManager.cs" />
+    <Compile Include="Old\DutyPlanManager.cs" />
+    <Compile Include="Classes\RequestManager.cs" />
+    <Compile Include="Classes\ServerConsole.cs" />
+    <Compile Include="Old\DutyPlan.cs" />
     <Compile Include="Dashboard.xaml.cs">
       <DependentUpon>Dashboard.xaml</DependentUpon>
     </Compile>
     <Compile Include="Server.xaml.cs">
       <DependentUpon>Server.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ServerLogik.cs" />
+    <Compile Include="Old\ServerLogik.cs" />
     <Compile Include="SQL\Benutzer.cs">
       <DependentUpon>OrgaSANItionModel.tt</DependentUpon>
     </Compile>
